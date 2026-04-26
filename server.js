@@ -21,6 +21,14 @@ app.get('/', (req, res) => {
     res.send('Salon POS API is running...');
 });
 
+// Route files
+const authRoutes = require('./routes/auhrRoutes');
+const employeeRoutes = require('./routes/employeeRoutes');
+
+// Mount routes
+app.use('/api/auth', authRoutes);
+app.use('/api/employees', employeeRoutes);
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
