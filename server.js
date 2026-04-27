@@ -25,10 +25,12 @@ app.get('/', (req, res) => {
 console.log("Loading routes in server.js...");
 const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Mount routes
 app.use('/api/auth', authRoutes);
 app.use('/api/employees', employeeRoutes);
+app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 const { createEmployee, getEmployees } = require("../controllers/employeeController");
-const auth = require("../middleware/authMiddleware");
+const { protect: auth } = require("../middleware/authMiddleware");
 const role = require("../middleware/roleMiddleware");
 
 //Admin creates emplloyee

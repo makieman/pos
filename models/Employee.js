@@ -9,7 +9,7 @@ const employeeSchema = new mongoose.Schema({
   commissionRate: { type: Number, default: 0.1 }
 }, { timestamps: true });
 
-// 🔐 Hash password before saving
+//  Hash password before saving
 employeeSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
 
