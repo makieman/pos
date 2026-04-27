@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 // ✅ Create Employee
 exports.createEmployee = async (req, res) => {
   try {
-    const { name, email, password, commissionRate } = req.body;
+    const { name, email, password, commissionType, commissionValue } = req.body;
 
     // Check if exists
     const existing = await User.findOne({ email });
@@ -22,7 +22,8 @@ exports.createEmployee = async (req, res) => {
       email,
       password: hashedPassword,
       role: "employee",
-      commissionRate,
+      commissionType,
+      commissionValue,
     });
 
     res.status(201).json({
@@ -31,7 +32,8 @@ exports.createEmployee = async (req, res) => {
         id: employee._id,
         name: employee.name,
         email: employee.email,
-        commissionRate: employee.commissionRate,
+        commissionType: employee.commissionType,
+        commissionValue: employee.commissionValue,
       },
     });
   } catch (error) {

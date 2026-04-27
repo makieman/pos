@@ -19,9 +19,14 @@ const userSchema = new mongoose.Schema(
         enum:["admin","employee"],
         default:"employee",
     },
-    commissionRate:{
-        type:Number,
-        default:0,
+    commissionType: {
+      type: String,
+      enum: ["percentage", "fixed"],
+      default: "percentage",
+    },
+    commissionValue: {
+      type: Number,
+      default: 0,
     },
     },
     { timestamps:true }

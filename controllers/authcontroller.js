@@ -1,34 +1,34 @@
-const Employee = require("../models/Employee");
+const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const employee = await Employee.findOne({ email });
+    const user = await User.findOne({ email });
 
-    if (!employee) {
+    if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const isMatch = await bcrypt.compare(password, employee.password);
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
     const token = jwt.sign(
-      { id: employee._id, role: employee.role },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
     res.json({
       token,
-      employee: {
-        id: employee._id,
-        name: employee.name,
-        email: employee.email,
-        role: employee.role,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -38,25 +38,36 @@ exports.login = async (req, res) => {
 
 exports.registerAdmin = async (req, res) => {
   try {
-    return res.send("register admin working");
-    
     const { name, email, password } = req.body;
-    const existing = await Employee.findOne({ email });
+    const existing = await User.findOne({ email });
 
     if (existing) {
-      return res.status(400).json({ message: "employee already exists" });
+      return res.status(400).json({ message: "Admin already exists" });
     }
 
-    const employee = new Employee({
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const admin = new User({
       name,
       email,
-      password,
+      password: hashedPassword,
       role: "admin",
-      commissionRate: 0,
+      commissionType: "percentage",
+      commissionValue: 0,
     });
 
-    await employee.save();
-    res.status(201).json(employee);
+    await admin.save();
+    res.status(201).json({
+      message: "Admin registered",
+      admin: {
+        id: admin._id,
+        name: admin.name,
+        email: admin.email,
+        role: admin.role,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
