@@ -1,7 +1,7 @@
 const Service = require("../models/Service");
 const User = require("../models/User");
 
-// ✅ Create Service
+//  Create Service
 exports.createService = async (req, res) => {
   try {
     const { name, price, employeeId } = req.body;
@@ -13,7 +13,7 @@ exports.createService = async (req, res) => {
 
     let commission = 0;
 
-    // 🔥 Commission Logic
+    //  Commission Logic
     if (employee.commissionType === "percentage") {
       commission = (employee.commissionValue / 100) * price;
     } else if (employee.commissionType === "fixed") {
