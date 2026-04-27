@@ -38,6 +38,8 @@ exports.login = async (req, res) => {
 
 exports.registerAdmin = async (req, res) => {
   try {
+    return res.send("register admin working");
+    
     const { name, email, password } = req.body;
     const existing = await Employee.findOne({ email });
 

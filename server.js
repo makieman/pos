@@ -22,7 +22,8 @@ app.get('/', (req, res) => {
 });
 
 // Route files
-const authRoutes = require('./routes/auhrRoutes');
+console.log("Loading routes in server.js...");
+const authRoutes = require('./routes/authRoutes');
 const employeeRoutes = require('./routes/employeeRoutes');
 
 // Mount routes
