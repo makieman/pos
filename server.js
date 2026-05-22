@@ -13,7 +13,12 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:4200',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Authorization', 'Content-Type'],
+  credentials: true,
+}));
 app.use(express.json());
 
 // Routes Placeholder
@@ -29,6 +34,9 @@ const userRoutes = require('./routes/userRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
+const inventoryRoutes = require('./routes/inventoryRoutes');
+const shiftRoutes = require('./routes/shiftRoutes');
+const clockRoutes = require('./routes/clockRoutes');
 
 // Mount routes
 app.use('/api/auth', authRoutes);
@@ -37,6 +45,9 @@ app.use('/api/users', userRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/inventory', inventoryRoutes);
+app.use('/api/shifts', shiftRoutes);
+app.use('/api/clock', clockRoutes);
 
 const PORT = process.env.PORT || 5000;
 

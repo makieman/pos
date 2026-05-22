@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 // ✅ Create Employee
 exports.createEmployee = async (req, res) => {
   try {
-    const { name, email, password, commissionType, commissionValue } = req.body;
+    const { name, email, password, role, commissionType, commissionValue } = req.body;
 
     // Check if exists
     const existing = await User.findOne({ email });
@@ -21,7 +21,7 @@ exports.createEmployee = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: "employee",
+      role: role || "cashier",
       commissionType,
       commissionValue,
     });
@@ -32,6 +32,7 @@ exports.createEmployee = async (req, res) => {
         id: employee._id,
         name: employee.name,
         email: employee.email,
+        role: employee.role,
         commissionType: employee.commissionType,
         commissionValue: employee.commissionValue,
       },
@@ -42,13 +43,26 @@ exports.createEmployee = async (req, res) => {
   }
 };
 
-// ✅ Get All Employees
+// ✅ Get All Employees (retrieve all registered users to manage in Employee view)
 exports.getEmployees = async (req, res) => {
   try {
-    const employees = await User.find({ role: "employee" }).select("-password");
-
+    const employees = await User.find().select("-password").sort({ createdAt: -1 });
     res.json(employees);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ✅ Update Employee
+exports.updateEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+    delete updates.password; // never allow password update here
+    const employee = await User.findByIdAndUpdate(id, updates, { new: true }).select('-password');
+    if (!employee) return res.status(404).json({ message: 'Employee not found' });
+    res.json({ message: 'Employee updated', employee });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
   }
 };

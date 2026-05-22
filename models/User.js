@@ -16,8 +16,8 @@ const userSchema = new mongoose.Schema(
     },
     role:{
         type:String,
-        enum:["admin","employee"],
-        default:"employee",
+        enum:["admin", "manager", "cashier", "accountant", "supervisor", "waiter"],
+        default:"cashier",
     },
     commissionType: {
       type: String,
@@ -28,8 +28,29 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    failedLoginAttempts: {
+      type: Number,
+      default: 0,
     },
-    { timestamps:true }
+    lockoutUntil: {
+      type: Date,
+      default: null,
+    },
+    activeSessionId: {
+      type: String,
+      default: null,
+    },
+    },
+    {
+      timestamps: true,
+      toJSON: {
+        virtuals: true,
+        transform: (doc, ret) => {
+          ret.id = ret._id;
+          return ret;
+        },
+      },
+    }
    
 );
 module.exports = mongoose.model("User",userSchema);
