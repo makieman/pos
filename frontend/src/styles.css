@@ -1,0 +1,172 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-brand-primary: var(--color-indigo-600);
+  --color-brand-secondary: var(--color-indigo-700);
+  --color-sidebar-bg: var(--color-slate-900);
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-slate-50 text-slate-900 antialiased;
+  }
+}
+
+.card-sleek {
+  @apply bg-white rounded-xl border border-slate-100 shadow-sm transition-all duration-200;
+}
+
+.btn-primary-sleek {
+  @apply bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg px-4 py-2 text-sm font-semibold transition-all shadow-sm active:scale-95;
+}
+
+/* Minimalist Scrollbar */
+*::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.03); 
+  border-radius: 20px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+/* For Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.03) transparent;
+}
+
+/* Premium Print Styles */
+@media print {
+  /* Hide UI-only interactive controls */
+  app-sidebar,
+  header.lg\:hidden, /* Mobile header */
+  div.fixed.inset-0, /* Mobile Overlay / Modal backdrops */
+  button,
+  .btn-primary-sleek,
+  form,
+  .quick-tip,
+  mat-icon {
+    display: none !important;
+  }
+
+  /* Reset layout constraints to allow full multi-page printing */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt !important;
+  }
+
+  /* Override Layout component h-screen/overflow constraints */
+  app-layout > div,
+  .flex.h-screen {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  main {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .max-w-7xl {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Clean up cards */
+  .card-sleek {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    page-break-inside: avoid;
+    margin-bottom: 1.5rem !important;
+  }
+
+  /* Layout grids adjustment */
+  .grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  /* Table styling */
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border-bottom: 1px solid #cbd5e1 !important;
+    padding: 8px 12px !important;
+    font-size: 9pt !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  /* Force color prints and text styles */
+  .text-emerald-500, .text-emerald-600 {
+    color: #15803d !important;
+  }
+
+  .text-rose-500, .text-rose-600 {
+    color: #be123c !important;
+  }
+
+  .text-indigo-600 {
+    color: #4338ca !important;
+  }
+
+  .bg-slate-900 {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .bg-slate-900 * {
+    color: #ffffff !important;
+  }
+
+  /* Custom Print Header */
+  .print-only-header {
+    display: block !important;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #0f172a;
+    padding-bottom: 1rem;
+  }
+}
+
+.print-only-header {
+  display: none;
+}
