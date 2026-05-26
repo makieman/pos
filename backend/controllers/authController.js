@@ -8,7 +8,7 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "Incorrect email or password" });
     }
 
     // Check Lockout Status
@@ -27,7 +27,7 @@ exports.login = async (req, res) => {
       }
       await user.save();
       return res.status(401).json({
-        message: "Invalid credentials",
+        message: "Incorrect email or password",
         failedAttempts: user.failedLoginAttempts,
         attemptsRemaining: Math.max(0, 5 - user.failedLoginAttempts),
       });

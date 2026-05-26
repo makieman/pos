@@ -18,8 +18,8 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem, Shift } from '..
         </div>
       </header>
 
-      <!-- Active Shift Presence Verification -->
-      @if (!activeShift()) {
+      <!-- Active Shift Presence Verification (Bypassed) -->
+      @if (false) {
         <div class="card-sleek p-10 bg-slate-900 text-white rounded-2xl max-w-xl mx-auto text-center space-y-6 shadow-xl animate-in zoom-in duration-300">
           <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full mb-2">
             <mat-icon class="scale-150">lock</mat-icon>

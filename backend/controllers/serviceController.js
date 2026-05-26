@@ -14,12 +14,15 @@ exports.createService = async (req, res) => {
 
     // 2. Check if there is an active open shift
     const activeShift = await Shift.findOne({ status: "open" });
+    // Bypassed for now:
+    /*
     if (!activeShift) {
       return res.status(400).json({
         message: "No active shift is open. You must open a shift with a cash float first.",
         noActiveShift: true
       });
     }
+    */
 
     const { 
       items, 
@@ -134,7 +137,7 @@ exports.createService = async (req, res) => {
       discount: totalDiscount,
       tax,
       status: "completed",
-      shift: activeShift._id,
+      shift: activeShift ? activeShift._id : null,
     });
 
     res.status(201).json({

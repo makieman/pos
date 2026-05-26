@@ -66,3 +66,15 @@ exports.updateEmployee = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// ✅ Delete Employee
+exports.deleteEmployee = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const employee = await User.findByIdAndDelete(id);
+    if (!employee) return res.status(404).json({ message: 'Employee not found' });
+    res.json({ message: 'Employee deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+};

@@ -36,7 +36,7 @@ export const routes: Routes = [
       { 
         path: 'inventory', 
         component: InventoryPage, 
-        data: { roles: ['admin', 'manager', 'cashier', 'supervisor'] } 
+        data: { roles: ['admin'] } 
       },
       { 
         path: 'commissions', 

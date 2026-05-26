@@ -88,7 +88,7 @@ import { AuthService } from '../context/auth.state';
         </div>
         
         <p class="text-center mt-8 text-slate-400 text-xs font-medium uppercase tracking-widest">
-          Secured by POSPro
+          Secured by mark
         </p>
       </div>
     </div>
@@ -124,7 +124,8 @@ export class LoginPage {
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
-        this.error.set(err.message || 'Login failed. Please check your credentials.');
+        const errorMsg = err.error?.message || 'Login failed. Please check your credentials.';
+        this.error.set(errorMsg);
         this.loading.set(false);
       }
     });

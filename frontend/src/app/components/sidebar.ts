@@ -26,7 +26,7 @@ import { SidebarState } from '../services/sidebar.state';
           </div>
           @if (!state.isCollapsed() || state.isMobileOpen()) {
             <span class="text-white font-bold text-lg tracking-tight whitespace-nowrap animate-in fade-in slide-in-from-left-2 grow">
-              POSPro <span class="text-indigo-400">POS</span>
+              <span class="text-indigo-400">POS</span>
             </span>
           }
         </div>

@@ -28,6 +28,11 @@ export class EmployeeService extends BaseApiService {
     return this.http.put<any>(`${this.baseUrl}/users/${id}`, updates, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
+
+  deleteEmployee(id: string): Observable<any> {
+    return this.http.delete<any>(`${this.baseUrl}/users/${id}`, { headers: this.getHeaders() })
+      .pipe(catchError(this.handleError));
+  }
 }
 
 @Injectable({ providedIn: 'root' })

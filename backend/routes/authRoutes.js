@@ -6,6 +6,6 @@ console.log("authRoutes loaded successfully");
 
 router.post("/login", login);
 router.post("/register-admin", registerAdmin);
-router.post("/seed", seedEmployees);
+ router.post("/seed", seedEmployees); 
 
 module.exports = router;
