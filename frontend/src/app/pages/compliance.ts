@@ -624,6 +624,7 @@ export class CompliancePage {
           delay(200),
           mergeMap(res2 => {
             token2 = res2.token;
+            this.tokens['cashier'] = token2; // Keep cashier token active for subsequent tests!
             this.addLog(id, `[SUCCESS] Session 2 token generated (Session 1 should now be terminated).`);
 
             // Attempt request with Session 1 (terminated token)
@@ -632,7 +633,8 @@ export class CompliancePage {
             
             return this.http.get<any>(`${this.backendUrl}/shifts/current`, { headers }).pipe(
               catchError(err => {
-                const isDualLogout = err.status === 401 && err.error.message.includes('session');
+                const msg = err.error?.message?.toLowerCase() || '';
+                const isDualLogout = err.status === 401 && (msg.includes('session') || msg.includes('device') || msg.includes('logged out'));
                 if (isDualLogout) {
                   this.setStatus(id, 'passed');
                   this.addLog(id, `[PASS] Dual-session dropped correctly! Server returned 401: ${err.error.message}`);

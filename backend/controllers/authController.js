@@ -24,6 +24,10 @@ exports.login = async (req, res) => {
       user.failedLoginAttempts = (user.failedLoginAttempts || 0) + 1;
       if (user.failedLoginAttempts >= 5) {
         user.lockoutUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes lockout
+        await user.save();
+        return res.status(403).json({
+          message: "Account is temporarily locked. Please try again in 15 minutes.",
+        });
       }
       await user.save();
       return res.status(401).json({
