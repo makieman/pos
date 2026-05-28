@@ -1,6 +1,6 @@
 # Salon Point of Sale (POS) System
 
-An enterprise-grade, compliance-driven Point of Sale (POS) application designed specifically for modern salons and wellness centers. The system features a robust **Node.js/Express/MongoDB** backend paired with a high-performance **Angular 21** frontend utilizing Tailwind CSS and Google Material design paradigms.
+An enterprise-grade, compliance-driven Point of Sale (POS) application designed specifically for modern salons and wellness centers. The system features a robust **Node.js/Express/MongoDB** backend paired with a high-performance **Angular 21** frontend utilizing Tailwind CSS and Google Material design paradigms
 
 This application is built with stringent financial controls, automated inventory ledger calculations, and comprehensive compliance auditing tools.
 
@@ -80,11 +80,6 @@ pos/
 │   ├── angular.json           # Angular project workspace configuration
 │   └── package.json           # Frontend dependencies and Tailwind build setups
 ```
-
----
-
-## 🔧 Installation & Setup
-
 ### Prerequisites
 *   Node.js (v18+ recommended)
 *   MongoDB Instance (Local Community Edition or MongoDB Atlas cloud cluster)
