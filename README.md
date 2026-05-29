@@ -6,7 +6,7 @@ This application is built with stringent financial controls, automated inventory
 
 ---
 
-## 🚀 Key Features & Compliance Modules
+## Key Features & Compliance Modules
 
 The system is architected around 6 core compliance modules, fully verified by an interactive automated test suite:
 
@@ -42,7 +42,7 @@ The system is architected around 6 core compliance modules, fully verified by an
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Component | Technology | Description |
 | :--- | :--- | :--- |
@@ -54,7 +54,7 @@ The system is architected around 6 core compliance modules, fully verified by an
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 pos/
