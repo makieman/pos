@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { BaseApiService } from './base';
-import { DashboardSummary, Employee, ServiceRecord, Expense, InventoryItem, Shift, ClockLog } from '../models/types';
+import { DashboardSummary, Employee, ServiceRecord, Expense, InventoryItem, ClockLog } from '../models/types';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService extends BaseApiService {
@@ -90,34 +90,6 @@ export class InventoryService extends BaseApiService {
 
   deleteItem(id: string): Observable<any> {
     return this.http.delete<any>(`${this.baseUrl}/inventory/${id}`, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-}
-
-@Injectable({ providedIn: 'root' })
-export class ShiftService extends BaseApiService {
-  getCurrentShift(): Observable<{ active: boolean; shift?: Shift }> {
-    return this.http.get<any>(`${this.baseUrl}/shifts/current`, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-
-  openShift(openingFloat: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/shifts/open`, { openingFloat }, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-
-  closeShift(closingCash: number): Observable<any> {
-    return this.http.post<any>(`${this.baseUrl}/shifts/close`, { closingCash }, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-
-  getZReport(id: string): Observable<{ shift: Shift; transactions: ServiceRecord[] }> {
-    return this.http.get<any>(`${this.baseUrl}/shifts/${id}/z-report`, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-
-  getDailyRollup(): Observable<{ shifts: Shift[]; rollup: any }> {
-    return this.http.get<any>(`${this.baseUrl}/shifts/rollup`, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 }

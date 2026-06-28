@@ -138,8 +138,8 @@ export class SidebarComponent {
 
   menuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
-    { 
-      label: 'Sales', 
+    {
+      label: 'Sales',
       icon: 'point_of_sale',
       subItems: [
         { path: '/services', label: 'Cash Sale' },

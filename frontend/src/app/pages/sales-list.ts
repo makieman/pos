@@ -420,7 +420,7 @@ export class SalesListPage implements OnInit {
 
   voidSale(sale: ServiceRecord) {
     if (!sale || !sale.id) return;
-    if (confirm('Are you sure you want to void this transaction? Voids will decrement shift balances and mark transaction as VOIDED.')) {
+    if (confirm('Are you sure you want to void this transaction? This will mark it as VOIDED and restock any products.')) {
       this.serviceRecordService.voidService(sale.id).subscribe({
         next: () => {
           this.loadData();

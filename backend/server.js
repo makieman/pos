@@ -35,7 +35,6 @@ const serviceRoutes = require('./routes/serviceRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 const inventoryRoutes = require('./routes/inventoryRoutes');
-const shiftRoutes = require('./routes/shiftRoutes');
 const clockRoutes = require('./routes/clockRoutes');
 
 // Mount routes
@@ -46,7 +45,6 @@ app.use('/api/services', serviceRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/inventory', inventoryRoutes);
-app.use('/api/shifts', shiftRoutes);
 app.use('/api/clock', clockRoutes);
 
 const PORT = process.env.PORT || 5000;

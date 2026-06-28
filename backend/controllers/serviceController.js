@@ -1,7 +1,6 @@
 const Service = require("../models/Service");
 const User = require("../models/User");
 const Inventory = require("../models/Inventory");
-const Shift = require("../models/Shift");
 const AuditLog = require("../models/AuditLog");
 
 // ✅ Create Sale (Checkout)
@@ -126,7 +125,6 @@ exports.createService = async (req, res) => {
       discount: totalDiscount,
       tax,
       status: "completed",
-      shift: null,
     });
 
     res.status(201).json({
@@ -244,16 +242,7 @@ exports.voidService = async (req, res) => {
       return res.status(400).json({ message: "This transaction is already voided." });
     }
 
-    // Check if the shift is closed
-    const associatedShift = await Shift.findById(service.shift);
-    if (associatedShift && associatedShift.status === "closed") {
-      // Require Manager or Admin or Supervisor override
-      if (!["admin", "manager", "supervisor"].includes(req.user.role)) {
-        return res.status(403).json({
-          message: "Access Denied: Voiding a closed shift transaction requires a Manager or Supervisor override.",
-        });
-      }
-    }
+
 
     // 1. Restock products in inventory
     for (const item of service.items) {

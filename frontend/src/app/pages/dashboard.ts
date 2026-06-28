@@ -139,7 +139,7 @@ import { forkJoin } from 'rxjs';
              <div class="bg-indigo-900 p-6 rounded-xl text-white relative overflow-hidden group">
                 <div class="relative z-10">
                   <h4 class="font-bold mb-1">Daily Report Ready</h4>
-                  <p class="text-xs text-indigo-300 mb-6 max-w-[180px]">Download your summarized transaction log for today's shifts.</p>
+                  <p class="text-xs text-indigo-300 mb-6 max-w-[180px]">Download your summarized transaction log for today's sales.</p>
                   <button (click)="exportPDF()" class="bg-white text-indigo-900 text-[10px] font-bold px-4 py-2 rounded-lg hover:bg-slate-50 shadow-sm transition-all active:scale-95 uppercase tracking-wider">Export PDF</button>
                 </div>
                 <mat-icon class="absolute -right-6 -bottom-6 text-white/5 text-[120px] group-hover:scale-110 transition-transform duration-700">description</mat-icon>

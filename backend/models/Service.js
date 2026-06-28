@@ -82,11 +82,6 @@ const serviceSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    shift: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Shift",
-      default: null,
-    },
   },
   {
     timestamps: true,

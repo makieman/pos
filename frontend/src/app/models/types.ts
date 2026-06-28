@@ -72,22 +72,6 @@ export interface AuthResponse {
   user: User;
 }
 
-export interface Shift {
-  id?: string;
-  openedBy: string | User;
-  openingFloat: number;
-  closingCash?: number;
-  status: 'open' | 'closed';
-  openedAt: string;
-  closedAt?: string;
-  cashSales: number;
-  cashRefunds: number;
-  grossTotal: number;
-  netSales: number;
-  taxCollected: number;
-  discounts: number;
-}
-
 export interface ClockLog {
   id?: string;
   employee: string | User;

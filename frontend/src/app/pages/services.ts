@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ServiceRecordService, EmployeeService, InventoryService } from '../services/api.services';
 import { AuthService } from '../context/auth.state';
-import { Employee, ServiceRecord, PaymentMethod, InventoryItem, Shift } from '../models/types';
+import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models/types';
 
 @Component({
   selector: 'app-service-recording',
