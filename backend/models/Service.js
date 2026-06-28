@@ -85,7 +85,7 @@ const serviceSchema = new mongoose.Schema(
     shift: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Shift",
-      required: true,
+      default: null,
     },
   },
   {

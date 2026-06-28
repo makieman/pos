@@ -150,7 +150,7 @@ export class SidebarComponent {
     { path: '/inventory', label: 'Inventory', icon: 'inventory_2' },
     { path: '/commissions', label: 'Commissions', icon: 'assessment' },
     { path: '/financial-report', label: 'Reports', icon: 'payments' },
-    { path: '/compliance', label: 'Compliance Suite', icon: 'verified_user' },
+    { path: '/compliance', label: 'Compliance Suite', icon: 'verified_user', demoOnly: true },
   ];
 
   filteredMenuItems = computed(() => {
@@ -183,7 +183,13 @@ export class SidebarComponent {
         return ['admin', 'manager', 'accountant'].includes(role) ? item : null;
       }
 
-      return item;
-    }).filter(item => item !== null) as any[];
+    }).filter(item => {
+      if (!item) return false;
+      if ((item as any).demoOnly) {
+        const email = user.email;
+        return email === 'admin@salon.com'; // only demo admin sees this
+      }
+      return true;
+    }) as any[];
   });
 }

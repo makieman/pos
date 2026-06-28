@@ -61,9 +61,7 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem, Shift } from '..
                 <mat-icon class="text-sm">inventory_2</mat-icon>
                 <span class="text-[10px] font-bold uppercase tracking-widest text-white/90">Catalog Selection</span>
               </div>
-              <span class="text-xs text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-lg font-mono">
-                SHIFT ACTIVE: Float KSh {{activeShift()?.openingFloat | number}}
-              </span>
+
             </div>
             
             <div class="flex flex-col sm:flex-row gap-2">
@@ -462,22 +460,13 @@ export class ServicesPage implements OnInit {
   grandTotal = signal<number>(0);
 
   ngOnInit() {
-    this.checkShiftStatus();
     this.employeeService.getEmployees().subscribe(data => this.employees.set(data));
     this.inventoryService.getItems().subscribe(data => {
       this.inventoryItems.set(data.sort((a, b) => (b.stock || 0) - (a.stock || 0)));
     });
   }
 
-  checkShiftStatus() {
-    this.shiftService.getCurrentShift().subscribe(res => {
-      if (res.active && res.shift) {
-        this.activeShift.set(res.shift);
-      } else {
-        this.activeShift.set(null);
-      }
-    });
-  }
+
 
   openShift() {
     if (this.openingFloatInput <= 0) return;

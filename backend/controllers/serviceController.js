@@ -12,14 +12,6 @@ exports.createService = async (req, res) => {
       return res.status(403).json({ message: "Access Denied: Accountants cannot process sales." });
     }
 
-    // 2. Check if there is an active open shift
-    const activeShift = await Shift.findOne({ status: "open" });
-    if (!activeShift) {
-      return res.status(400).json({
-        message: "No active shift is open. You must open a shift with a cash float first.",
-        noActiveShift: true
-      });
-    }
 
     const { 
       items, 
@@ -134,7 +126,7 @@ exports.createService = async (req, res) => {
       discount: totalDiscount,
       tax,
       status: "completed",
-      shift: activeShift ? activeShift._id : null,
+      shift: null,
     });
 
     res.status(201).json({
