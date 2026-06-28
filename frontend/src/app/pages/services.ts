@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { ServiceRecordService, EmployeeService, InventoryService, ShiftService } from '../services/api.services';
+import { ServiceRecordService, EmployeeService, InventoryService } from '../services/api.services';
 import { AuthService } from '../context/auth.state';
 import { Employee, ServiceRecord, PaymentMethod, InventoryItem, Shift } from '../models/types';
 
@@ -18,42 +18,7 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem, Shift } from '..
         </div>
       </header>
 
-      <!-- Active Shift Presence Verification (Bypassed) -->
-      @if (false) {
-        <div class="card-sleek p-10 bg-slate-900 text-white rounded-2xl max-w-xl mx-auto text-center space-y-6 shadow-xl animate-in zoom-in duration-300">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-amber-500/10 text-amber-500 rounded-full mb-2">
-            <mat-icon class="scale-150">lock</mat-icon>
-          </div>
-          <h2 class="text-xl font-bold tracking-tight">Shift Control: Shift is Closed</h2>
-          <p class="text-sm text-slate-400 max-w-sm mx-auto leading-relaxed">
-            You must open a new shift by entering an opening cash float to begin recording sales.
-          </p>
-          <div class="max-w-xs mx-auto space-y-4 pt-4">
-            <div>
-              <label for="opening-float" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Opening Cash Float (KSh)</label>
-              <input 
-                id="opening-float"
-                type="number" 
-                [(ngModel)]="openingFloatInput"
-                class="w-full bg-slate-800 text-white text-center text-lg font-black border border-slate-700 rounded-xl p-3.5 outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all font-mono" 
-                placeholder="1000" 
-              />
-            </div>
-            <button 
-              (click)="openShift()" 
-              [disabled]="openingFloatInput <= 0 || loadingShift()"
-              class="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-800 disabled:text-slate-600 text-white font-bold p-3.5 rounded-xl uppercase tracking-wider text-[11px] shadow-lg shadow-indigo-600/15 transition-all"
-            >
-              @if (loadingShift()) {
-                Opening Shift...
-              } @else {
-                Open Active Shift
-              }
-            </button>
-          </div>
-        </div>
-      } @else {
-        <!-- Checkout Interface -->
+      <!-- Checkout Interface -->
         <div class="p-5 bg-slate-900 rounded-2xl shadow-lg shadow-slate-900/10 text-white">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div class="flex items-center gap-3">
@@ -381,8 +346,6 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem, Shift } from '..
               </div>
             </div>
           </div>
-        </div>
-      }
     </div>
   `,
   styles: [`
@@ -396,7 +359,6 @@ export class ServicesPage implements OnInit {
   private serviceRecordService = inject(ServiceRecordService);
   private employeeService = inject(EmployeeService);
   private inventoryService = inject(InventoryService);
-  private shiftService = inject(ShiftService);
   authService = inject(AuthService);
 
   inventoryItems = signal<InventoryItem[]>([]);
@@ -408,10 +370,7 @@ export class ServicesPage implements OnInit {
   loading = signal(false);
   success = signal(false);
 
-  // Shift control state
-  activeShift = signal<Shift | null>(null);
-  openingFloatInput: number = 1000;
-  loadingShift = signal(false);
+
 
   // Advanced checkout inputs
   itemDiscounts: { [key: number]: number } = {};
@@ -468,17 +427,7 @@ export class ServicesPage implements OnInit {
 
 
 
-  openShift() {
-    if (this.openingFloatInput <= 0) return;
-    this.loadingShift.set(true);
-    this.shiftService.openShift(this.openingFloatInput).subscribe({
-      next: (res) => {
-        this.activeShift.set(res.shift);
-        this.loadingShift.set(false);
-      },
-      error: () => this.loadingShift.set(false)
-    });
-  }
+
 
   selectPaymentMethod(method: any) {
     this.serviceForm.patchValue({ paymentMethod: method });
