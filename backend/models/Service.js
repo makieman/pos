@@ -26,26 +26,54 @@ const serviceItemSchema = new mongoose.Schema({
     enum: ["service", "product"],
     required: true,
   },
+  // Per-item commission assignment
+  employeeId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null,
+  },
+  commissionType: {
+    type: String,
+    enum: ["percentage", "fixed"],
+    default: "percentage",
+  },
+  commissionValue: {
+    type: Number,
+    default: 0,
+  },
+  commissionEarned: {
+    type: Number,
+    default: 0,
+  },
+  // Item-level paid flag — paying one employee doesn't affect another's items on the same sale
+  commissionPaid: {
+    type: Boolean,
+    default: false,
+  },
+  commissionPaidAt: {
+    type: Date,
+    default: null,
+  },
 });
 
 const serviceSchema = new mongoose.Schema(
   {
     name: {
-      type: String, // Comma separated item names for backwards compatibility
+      type: String, // Comma-separated item names for backwards compatibility
       required: true,
     },
     price: {
-      type: Number, // Total price paid (total) for backwards compatibility
+      type: Number, // Grand total paid (for backwards compatibility)
       required: true,
     },
     employee: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: true, // The cashier who processed the transaction
     },
     commissionEarned: {
       type: Number,
-      default: 0,
+      default: 0, // Sum of all item commissions — used by dashboard
     },
     businessProfit: {
       type: Number,
@@ -67,7 +95,7 @@ const serviceSchema = new mongoose.Schema(
     },
     discount: {
       type: Number,
-      default: 0, // Total discount given on the service/cart
+      default: 0, // Total discount given on the sale
     },
     tax: {
       type: Number,

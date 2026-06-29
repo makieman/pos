@@ -27,6 +27,12 @@ export interface ServiceRecordItem {
   discount: number;
   isTaxable: boolean;
   category: 'service' | 'product';
+  employeeId?: string;
+  commissionType?: string;
+  commissionValue?: number;
+  commissionEarned?: number;
+  commissionPaid?: boolean;
+  commissionPaidAt?: string;
 }
 
 export interface ServiceRecord {
@@ -64,6 +70,8 @@ export interface InventoryItem {
   description?: string;
   stock?: number;
   isTaxable?: boolean;
+  commissionType?: 'percentage' | 'fixed';
+  commissionValue?: number;
   createdAt?: string;
 }
 
@@ -78,4 +86,26 @@ export interface ClockLog {
   clockIn: string;
   clockOut?: string;
   status: 'in' | 'out';
+}
+
+export interface CommissionReportItem {
+  saleId: string;
+  serviceName: string;
+  price: number;
+  discount?: number;
+  commissionType: string;
+  commissionValue: number;
+  commissionEarned: number;
+  commissionPaid: boolean;
+  commissionPaidAt?: string;
+}
+
+export interface CommissionReportEntry {
+  employeeId: string;
+  employeeName: string;
+  employeeEmail: string;
+  totalCommission: number;
+  alreadyPaid: boolean;
+  paidAt?: string | null;
+  items: CommissionReportItem[];
 }

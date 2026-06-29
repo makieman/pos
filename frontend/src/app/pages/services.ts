@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { ServiceRecordService, EmployeeService, InventoryService } from '../services/api.services';
 import { AuthService } from '../context/auth.state';
-import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models/types';
+import { Employee, PaymentMethod, InventoryItem } from '../models/types';
 
 @Component({
   selector: 'app-service-recording',
@@ -26,7 +26,6 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
                 <mat-icon class="text-sm">inventory_2</mat-icon>
                 <span class="text-[10px] font-bold uppercase tracking-widest text-white/90">Catalog Selection</span>
               </div>
-
             </div>
             
             <div class="flex flex-col sm:flex-row gap-2">
@@ -136,46 +135,70 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
               </div>
             </div>
 
-            <!-- Basket Items with Item-Level Discount -->
+            <!-- Basket Items with per-item employee assignment -->
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
               <header class="p-4 border-b border-slate-50 bg-slate-50/20 flex items-center justify-between">
                 <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Basket Summary</h3>
-                <span class="text-[10px] text-slate-400 font-bold">Item-level discounts can be entered directly</span>
+                <span class="text-[10px] text-slate-400 font-bold">Assign staff to each item</span>
               </header>
               <div class="p-6">
                 @if (selectedItems().length > 0) {
                   <div class="space-y-4">
                     @for (record of selectedItems(); track record.id + $index) {
-                      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-slate-50/50 rounded-xl group hover:bg-slate-50 transition-all border border-slate-100 gap-3">
-                        <div class="flex items-center gap-3">
-                          <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-[10px] font-bold">{{$index + 1}}</div>
-                          <div>
-                            <span class="text-xs font-bold text-slate-700">{{record.name}}</span>
-                            <p class="text-[9px] text-purple-600 font-bold uppercase tracking-widest mt-0.5">
-                              {{record.isTaxable !== false ? 'Taxable (16% VAT)' : 'Non-Taxable'}}
-                            </p>
+                      <div 
+                        class="flex flex-col p-4 bg-slate-50/50 rounded-xl group hover:bg-slate-50 transition-all border border-slate-100 gap-3"
+                        [class.border-red-200]="formSubmitAttempted && !itemEmployees()[$index]"
+                        [class.bg-red-50]="formSubmitAttempted && !itemEmployees()[$index]"
+                      >
+                        <div class="flex items-center justify-between">
+                          <div class="flex items-center gap-3">
+                            <div class="w-6 h-6 rounded-full bg-slate-200 text-slate-500 flex items-center justify-center text-[10px] font-bold">{{$index + 1}}</div>
+                            <div>
+                              <span class="text-xs font-bold text-slate-700">{{record.name}}</span>
+                              <p class="text-[9px] text-purple-600 font-bold uppercase tracking-widest mt-0.5">
+                                {{record.isTaxable !== false ? 'Taxable (16% VAT)' : 'Non-Taxable'}}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                        
-                        <div class="flex items-center justify-between sm:justify-end gap-6 grow">
-                          <!-- Item level discount inputs (KSh) -->
-                          <div class="flex items-center gap-1.5">
-                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Discount KSh:</label>
-                            <input 
-                              type="number"
-                              [(ngModel)]="itemDiscounts[$index]"
-                              (input)="recalculateTotals()"
-                              class="w-16 p-1 text-xs font-mono text-center font-bold border border-slate-200 rounded" 
-                              placeholder="0"
-                              min="0"
-                            />
-                          </div>
-                          
                           <div class="flex items-center gap-4">
                             <span class="text-xs font-black text-slate-900 font-mono">KSh {{record.price | number}}</span>
                             <button (click)="removeItem($index)" class="text-slate-300 hover:text-rose-500 transition-colors">
                               <mat-icon class="text-sm">delete_outline</mat-icon>
                             </button>
+                          </div>
+                        </div>
+
+                        <!-- Per-item controls: discount + employee -->
+                        <div class="flex flex-col sm:flex-row gap-3">
+                          <!-- Item discount -->
+                          <div class="flex items-center gap-1.5">
+                            <label class="text-[9px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">Discount KSh:</label>
+                            <input 
+                              type="number"
+                              [ngModel]="itemDiscounts()[$index] || 0"
+                              (ngModelChange)="setDiscount($index, $event)"
+                              class="w-16 p-1 text-xs font-mono text-center font-bold border border-slate-200 rounded" 
+                              placeholder="0"
+                              min="0"
+                            />
+                          </div>
+
+                          <!-- Per-item employee assignment -->
+                          <div class="flex-1">
+                            <select
+                              [ngModel]="itemEmployees()[$index] || ''"
+                              (ngModelChange)="setEmployee($index, $event)"
+                              class="w-full text-xs font-bold border rounded-lg px-3 py-1.5 outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer"
+                              [class.border-red-300]="formSubmitAttempted && !itemEmployees()[$index]"
+                              [class.bg-red-50]="formSubmitAttempted && !itemEmployees()[$index]"
+                              [class.border-slate-200]="!formSubmitAttempted || itemEmployees()[$index]"
+                              [class.bg-slate-50]="!formSubmitAttempted || itemEmployees()[$index]"
+                            >
+                              <option value="">Who performed this?</option>
+                              @for (emp of employees(); track emp.id) {
+                                <option [value]="emp.id">{{emp.name}} ({{emp.role}})</option>
+                              }
+                            </select>
                           </div>
                         </div>
                       </div>
@@ -239,19 +262,9 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
                   </div>
                 </div>
 
-                <!-- Transaction Assignment Form -->
+                <!-- Payment Form -->
                 <form [formGroup]="serviceForm" (ngSubmit)="onFormSubmit()" class="space-y-5 pt-4">
                   <div class="space-y-4">
-                    <div>
-                      <label for="serv-staff-select" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 block ml-1">Assign to Staff Member</label>
-                      <select id="serv-staff-select" formControlName="employeeId" class="w-full text-xs font-bold border-slate-100 rounded-xl bg-slate-50 p-3.5 outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer shadow-sm">
-                        <option value="">Select Service Provider</option>
-                        @for (emp of employees(); track emp.id) {
-                          <option [value]="emp.id">{{emp.name}} ({{emp.role}})</option>
-                        }
-                      </select>
-                    </div>
-
                     <div>
                       <span id="serv-pm-title" class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 block ml-1">Select Payment Method</span>
                       <div aria-labelledby="serv-pm-title" class="grid grid-cols-2 gap-2">
@@ -268,7 +281,7 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
                       </div>
                     </div>
 
-                    <!-- Cash tendered changes (change calculation widget) -->
+                    <!-- Cash tendered -->
                     @if (serviceForm.get('paymentMethod')?.value === 'cash') {
                       <div class="animate-in slide-in-from-top-2">
                         <label for="cash-tendered" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Cash Amount Tendered (KSh)</label>
@@ -289,7 +302,7 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
                       </div>
                     }
 
-                    <!-- Split payment fields -->
+                    <!-- Split payment -->
                     @if (serviceForm.get('paymentMethod')?.value === 'split') {
                       <div class="grid grid-cols-2 gap-4 border border-indigo-50 p-4 rounded-xl bg-slate-50/50 animate-in slide-in-from-top-2">
                         <div>
@@ -315,7 +328,8 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
                   <div class="pt-6">
                     <button 
                       type="submit" 
-                      [disabled]="serviceForm.invalid || selectedItems().length === 0 || loading() || isWaiterAndDiscountApplied()"
+                      (click)="onSubmitClick()"
+                      [disabled]="serviceForm.invalid || selectedItems().length === 0 || loading() || isWaiterAndDiscountApplied() || hasUnassignedItems()"
                       class="w-full group bg-slate-900 hover:bg-slate-800 disabled:bg-slate-100 disabled:text-slate-400 text-sm font-black text-white p-4 rounded-xl shadow-lg shadow-slate-900/20 transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-3"
                     >
                       @if (loading()) {
@@ -328,6 +342,11 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
                     @if (isWaiterAndDiscountApplied()) {
                       <p class="text-[10px] text-red-500 mt-2 text-center ml-1">
                         Waiters are not permitted to apply discounts.
+                      </p>
+                    }
+                    @if (formSubmitAttempted && hasUnassignedItems()) {
+                      <p class="text-[10px] text-red-500 mt-2 text-center ml-1">
+                        Please assign a staff member to every item in the basket.
                       </p>
                     }
                   </div>
@@ -346,7 +365,7 @@ import { Employee, ServiceRecord, PaymentMethod, InventoryItem } from '../models
               </div>
             </div>
           </div>
-    </div>
+      </div>
   `,
   styles: [`
     :host { display: block; }
@@ -370,19 +389,19 @@ export class ServicesPage implements OnInit {
   loading = signal(false);
   success = signal(false);
 
+  // Track if user attempted to submit (to trigger red highlights)
+  formSubmitAttempted = false;
 
-
-  // Advanced checkout inputs
-  itemDiscounts: { [key: number]: number } = {};
+  // Signal-based dictionaries to guarantee reactiveness with Angular Signals
+  itemDiscounts = signal<{ [key: number]: number }>({});
+  itemEmployees = signal<{ [key: number]: string }>({});
+  
   cartDiscountPercent: number = 0;
   amountTendered: number = 0;
   lastChange = signal<number>(0);
-  
-  // Split payment state
   splitCash: number = 0;
 
   serviceForm = this.fb.group({
-    employeeId: ['', Validators.required],
     paymentMethod: ['cash' as PaymentMethod, Validators.required]
   });
 
@@ -408,15 +427,15 @@ export class ServicesPage implements OnInit {
     );
   });
 
-  selectedEmployee = computed(() => {
-    const id = this.serviceForm.get('employeeId')?.value;
-    return this.employees().find(e => e.id === id);
-  });
-
   subtotal = signal<number>(0);
   totalDiscountsSum = signal<number>(0);
   calculatedTax = signal<number>(0);
   grandTotal = signal<number>(0);
+
+  // True if any basket item has no employee assigned (reacts to itemEmployees signal changes)
+  hasUnassignedItems = computed(() => {
+    return this.selectedItems().some((_, i) => !this.itemEmployees()[i]);
+  });
 
   ngOnInit() {
     this.employeeService.getEmployees().subscribe(data => this.employees.set(data));
@@ -425,10 +444,6 @@ export class ServicesPage implements OnInit {
     });
   }
 
-
-
-
-
   selectPaymentMethod(method: any) {
     this.serviceForm.patchValue({ paymentMethod: method });
     this.amountTendered = 0;
@@ -436,51 +451,75 @@ export class ServicesPage implements OnInit {
   }
 
   addToCart(item: InventoryItem) {
-    // Restrict out-of-stock product sales (Module 3)
     if (item.category === 'product' && (item.stock || 0) <= 0) {
       alert(`Product ${item.name} is currently out of stock! Sale blocked.`);
       return;
     }
-
     this.selectedItems.update(prev => [...prev, item]);
     this.success.set(false);
     this.recalculateTotals();
   }
 
+  setEmployee(index: number, employeeId: string) {
+    this.itemEmployees.update(prev => ({
+      ...prev,
+      [index]: employeeId
+    }));
+  }
+
+  setDiscount(index: number, amount: number) {
+    this.itemDiscounts.update(prev => ({
+      ...prev,
+      [index]: amount
+    }));
+    this.recalculateTotals();
+  }
+
   removeItem(index: number) {
+    // Remove the item from the basket
     this.selectedItems.update(prev => prev.filter((_, i) => i !== index));
-    // Clear discount index
-    delete this.itemDiscounts[index];
+
+    // Re-index both dicts so keys stay aligned with the new array positions
+    const newEmployees: { [key: number]: string } = {};
+    const newDiscounts: { [key: number]: number } = {};
+
+    this.selectedItems().forEach((_, i) => {
+      const oldIndex = i >= index ? i + 1 : i;
+      if (this.itemEmployees()[oldIndex] !== undefined) {
+        newEmployees[i] = this.itemEmployees()[oldIndex];
+      }
+      if (this.itemDiscounts()[oldIndex] !== undefined) {
+        newDiscounts[i] = this.itemDiscounts()[oldIndex];
+      }
+    });
+
+    this.itemEmployees.set(newEmployees);
+    this.itemDiscounts.set(newDiscounts);
     this.recalculateTotals();
   }
 
   recalculateTotals() {
     const itemsList = this.selectedItems();
     
-    // Subtotal
     const sub = itemsList.reduce((acc, curr) => acc + (curr.price || 0), 0);
     this.subtotal.set(sub);
 
-    // Item discounts sum
     let itemDiscountsSum = 0;
     let taxableAmount = 0;
 
     itemsList.forEach((item, index) => {
-      const disc = Number(this.itemDiscounts[index]) || 0;
+      const disc = Number(this.itemDiscounts()[index]) || 0;
       itemDiscountsSum += disc;
-      
       const itemSub = item.price - disc;
       if (item.isTaxable !== false) {
         taxableAmount += itemSub;
       }
     });
 
-    // Cart level percentage discount
     const cartDiscount = (this.cartDiscountPercent / 100) * (sub - itemDiscountsSum);
     const totalDiscounts = itemDiscountsSum + cartDiscount;
     this.totalDiscountsSum.set(totalDiscounts);
 
-    // Compute Tax (16% VAT on taxable items after proportional discount)
     const discountProportion = sub > 0 ? (totalDiscounts / sub) : 0;
     const discountedTaxableAmount = taxableAmount * (1 - discountProportion);
     const tax = Math.round(discountedTaxableAmount * 0.16);
@@ -499,24 +538,28 @@ export class ServicesPage implements OnInit {
     return role === 'waiter' && this.totalDiscountsSum() > 0;
   }
 
+  onSubmitClick() {
+    this.formSubmitAttempted = true;
+  }
+
   onFormSubmit() {
-    if (this.serviceForm.invalid || this.selectedItems().length === 0 || this.isWaiterAndDiscountApplied()) return;
+    this.formSubmitAttempted = true;
+    if (this.serviceForm.invalid || this.selectedItems().length === 0 || this.isWaiterAndDiscountApplied() || this.hasUnassignedItems()) return;
 
     this.loading.set(true);
-    const empId = this.serviceForm.get('employeeId')?.value;
     const paymentMethod = this.serviceForm.get('paymentMethod')?.value as PaymentMethod;
 
-    // Compile items list
+    // Compile items with per-item employeeId
     const orderItems = this.selectedItems().map((item, index) => ({
       id: item.id,
       name: item.name,
       price: item.price,
-      discount: Number(this.itemDiscounts[index]) || 0,
+      discount: Number(this.itemDiscounts()[index]) || 0,
       isTaxable: item.isTaxable !== false,
-      category: item.category
+      category: item.category,
+      employeeId: this.itemEmployees()[index] || null,
     }));
 
-    // Split details
     const splitDetails = paymentMethod === 'split' ? {
       cash: this.splitCash,
       card: this.grandTotal() - this.splitCash
@@ -524,7 +567,6 @@ export class ServicesPage implements OnInit {
 
     const checkoutData = {
       items: orderItems,
-      employeeId: empId,
       paymentMethod,
       splitDetails,
       cartDiscountPercent: this.cartDiscountPercent,
@@ -536,23 +578,21 @@ export class ServicesPage implements OnInit {
         this.loading.set(false);
         this.success.set(true);
         
-        // Output change
         if (paymentMethod === 'cash') {
           this.lastChange.set(res.change || 0);
         } else {
           this.lastChange.set(0);
         }
 
-        // Reset
+        // Reset all state
         this.selectedItems.set([]);
-        this.itemDiscounts = {};
+        this.itemDiscounts.set({});
+        this.itemEmployees.set({});
         this.cartDiscountPercent = 0;
         this.amountTendered = 0;
         this.splitCash = 0;
-        this.serviceForm.patchValue({
-          employeeId: '',
-          paymentMethod: 'cash'
-        });
+        this.formSubmitAttempted = false;
+        this.serviceForm.patchValue({ paymentMethod: 'cash' });
         
         this.recalculateTotals();
         

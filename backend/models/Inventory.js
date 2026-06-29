@@ -26,6 +26,19 @@ const inventorySchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    commissionType: {
+      type: String,
+      enum: ['percentage', 'fixed'],
+      default: 'percentage',
+    },
+    commissionValue: {
+      type: Number,
+      default: 0,
+    },
+    isCommissionable: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

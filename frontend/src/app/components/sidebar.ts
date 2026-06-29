@@ -183,6 +183,8 @@ export class SidebarComponent {
         return ['admin', 'manager', 'accountant'].includes(role) ? item : null;
       }
 
+      // Default: show the item for all roles
+      return item;
     }).filter(item => {
       if (!item) return false;
       if ((item as any).demoOnly) {

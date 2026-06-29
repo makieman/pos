@@ -148,9 +148,9 @@ type FilterRange = 'today' | 'yesterday' | 'this-week' | 'this-month' | 'last-mo
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
                       <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-[9px] font-black uppercase">
-                        {{sale.employeeId ? getEmployeeName(sale.employeeId).charAt(0) : '?'}}
+                        {{getEmployeeInitials(sale)}}
                       </div>
-                      <span class="text-xs font-medium text-slate-600">{{sale.employeeId ? getEmployeeName(sale.employeeId) : 'Unknown'}}</span>
+                      <span class="text-xs font-medium text-slate-600">{{getEmployeeLabel(sale)}}</span>
                     </div>
                   </td>
                   <td class="px-6 py-4">
@@ -377,6 +377,23 @@ export class SalesListPage implements OnInit {
   loadData() {
     this.employeeService.getEmployees().subscribe(data => this.employees.set(data));
     this.serviceRecordService.getRecentSales().subscribe(data => this.sales.set(data));
+  }
+
+  getEmployeeLabel(sale: any): string {
+    if (!sale) return 'Unknown';
+    if (sale.employee && typeof sale.employee === 'object') {
+      return sale.employee.name || 'Unknown';
+    }
+    const id = sale.employee || sale.employeeId;
+    if (id) {
+      return this.getEmployeeName(id);
+    }
+    return 'Unknown';
+  }
+
+  getEmployeeInitials(sale: any): string {
+    const name = this.getEmployeeLabel(sale);
+    return name.charAt(0).toUpperCase();
   }
 
   getEmployeeName(id: string): string {

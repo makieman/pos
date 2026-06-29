@@ -56,6 +56,26 @@ export class ServiceRecordService extends BaseApiService {
     return this.http.post<any>(`${this.baseUrl}/services/${id}/void`, {}, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
+
+  getCommissionReport(date: string): Observable<{ date: string; report: any[] }> {
+    return this.http.get<any>(
+      `${this.baseUrl}/services/commissions?date=${date}`,
+      { headers: this.getHeaders() }
+    ).pipe(catchError(this.handleError));
+  }
+
+  payCommissions(payload: {
+    employeeId: string;
+    employeeName: string;
+    amount: number;
+    date: string;
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${this.baseUrl}/services/commissions/pay`,
+      payload,
+      { headers: this.getHeaders() }
+    ).pipe(catchError(this.handleError));
+  }
 }
 
 @Injectable({ providedIn: 'root' })

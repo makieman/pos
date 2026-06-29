@@ -28,17 +28,17 @@ import { AuthService } from '../context/auth.state';
             </div>
           }
 
-          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-7">
             <div>
               <label for="email" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Email Address</label>
-              <div class="relative">
-                <mat-icon class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 text-sm">email</mat-icon>
+              <div class="relative flex items-center">
+                <mat-icon class="absolute left-3 text-slate-300 text-sm w-5 h-5 flex items-center justify-center">email</mat-icon>
                 <input
                   id="email"
                   type="email"
                   formControlName="email"
                   placeholder="admin@salon.com"
-                  class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
+                  class="w-full pl-11 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                 />
               </div>
               @if (loginForm.get('email')?.touched && loginForm.get('email')?.invalid) {
@@ -48,21 +48,21 @@ import { AuthService } from '../context/auth.state';
 
             <div>
               <label for="password" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Password</label>
-              <div class="relative">
-                <mat-icon class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300 text-sm">lock</mat-icon>
+              <div class="relative flex items-center">
+                <mat-icon class="absolute left-3 text-slate-300 text-sm w-5 h-5 flex items-center justify-center">lock</mat-icon>
                 <input
                   id="password"
                   [type]="showPassword() ? 'text' : 'password'"
                   formControlName="password"
                   placeholder="••••••••"
-                  class="w-full pl-10 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
+                  class="w-full pl-11 pr-12 py-2.5 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-sm"
                 />
                 <button
                   type="button"
                   (click)="showPassword.set(!showPassword())"
                   class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-300 hover:text-slate-600 transition-colors"
                 >
-                  <mat-icon class="text-sm font-bold">{{showPassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
+                  <mat-icon class="text-sm font-bold w-4 h-4 flex items-center justify-center">{{showPassword() ? 'visibility_off' : 'visibility'}}</mat-icon>
                 </button>
               </div>
             </div>

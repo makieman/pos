@@ -78,6 +78,15 @@ import { InventoryItem, InventoryCategory } from '../models/types';
               <div>
                 <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Price</p>
                 <p class="text-sm font-bold text-slate-900">KSh {{item.price | number}}</p>
+                <!-- Commission rate display -->
+                <p class="text-[10px] text-indigo-500 font-bold mt-0.5">
+                  Commission:
+                  @if (item.commissionType === 'fixed') {
+                    KSh {{item.commissionValue}} fixed
+                  } @else {
+                    {{item.commissionValue || 0}}%
+                  }
+                </p>
               </div>
               @if (item.category === 'product') {
                 <div class="text-right">
@@ -87,7 +96,7 @@ import { InventoryItem, InventoryCategory } from '../models/types';
               }
             </div>
 
-            <!-- Actions Overlay -->
+            <!-- Actions -->
             <div class="mt-4 flex gap-2">
               <button 
                 (click)="editItem(item)"
@@ -116,7 +125,7 @@ import { InventoryItem, InventoryCategory } from '../models/types';
           (keydown.escape)="closeModal()"
         >
           <div 
-            class="bg-white rounded-2xl w-full max-w-md p-8 animate-in zoom-in duration-300" 
+            class="bg-white rounded-2xl w-full max-w-md p-8 animate-in zoom-in duration-300 max-h-[90vh] overflow-y-auto" 
             (click)="$event.stopPropagation()"
             (keydown)="$event.stopPropagation()"
             role="dialog"
@@ -177,6 +186,31 @@ import { InventoryItem, InventoryCategory } from '../models/types';
                   </label>
                 </div>
 
+                <!-- Commission Fields -->
+                <div class="col-span-2 grid grid-cols-2 gap-4">
+                  <div>
+                    <label for="commissionType" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Commission Type</label>
+                    <select id="commissionType" formControlName="commissionType" class="w-full text-sm border-slate-200 rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
+                      <option value="percentage">Percentage (%)</option>
+                      <option value="fixed">Fixed (KSh)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="commissionValue" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">
+                      Commission Value
+                      ({{itemForm.get('commissionType')?.value === 'fixed' ? 'KSh' : '%'}})
+                    </label>
+                    <input
+                      id="commissionValue"
+                      type="number"
+                      formControlName="commissionValue"
+                      class="w-full text-sm border-slate-200 rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none"
+                      [placeholder]="itemForm.get('commissionType')?.value === 'fixed' ? 'e.g. 200' : 'e.g. 50'"
+                      min="0"
+                    />
+                  </div>
+                </div>
+
                 <div class="col-span-2">
                   <label for="description" class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 ml-1">Description</label>
                   <textarea id="description" formControlName="description" rows="3" class="w-full text-sm border-slate-200 rounded-lg p-2.5 bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
@@ -222,7 +256,9 @@ export class InventoryPage implements OnInit {
     category: ['service' as InventoryCategory, Validators.required],
     description: [''],
     stock: [0, [Validators.min(0)]],
-    isTaxable: [true]
+    isTaxable: [true],
+    commissionType: ['percentage'],
+    commissionValue: [0, [Validators.min(0)]]
   });
 
   ngOnInit() {
@@ -241,7 +277,9 @@ export class InventoryPage implements OnInit {
       category: item.category,
       description: item.description,
       stock: item.stock || 0,
-      isTaxable: item.isTaxable !== false
+      isTaxable: item.isTaxable !== false,
+      commissionType: item.commissionType || 'percentage',
+      commissionValue: item.commissionValue ?? 0
     });
     this.showAddModal.set(true);
   }
@@ -255,7 +293,7 @@ export class InventoryPage implements OnInit {
   closeModal() {
     this.showAddModal.set(false);
     this.editingId = null;
-    this.itemForm.reset({ category: 'service', price: 0, stock: 0, isTaxable: true });
+    this.itemForm.reset({ category: 'service', price: 0, stock: 0, isTaxable: true, commissionType: 'percentage', commissionValue: 0 });
   }
 
   onSubmit() {
